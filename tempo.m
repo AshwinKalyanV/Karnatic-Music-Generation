@@ -1,5 +1,5 @@
 clear all; close all;
-for datj = 4 % iterate over files
+for datj = 5 % iterate over files
 
 % load audio
 dat_root = 'D:\SPer\ISMIR - music paper\ismir_data\';
@@ -11,11 +11,11 @@ actualtempo = eval(strcat('ftdat.','actualtempo'));
 
 % generate tempos to evaluate on
 % 20% to 200% of actual tempo
-incrtempo = 20:10:200;
+incrtempo = 20:20:200;
 test_tempo = incrtempo/100*actualtempo;
 
 meansqer = []; flag = []; nwrong = []; trgdata = []; precision = [];
-tempthresh = 0.5*actualtempo;
+tempthresh = 0.1*actualtempo;
 
 for tt=1:length(incrtempo) 
 fprintf('starting iteration for tempo: \t %d  \n', incrtempo(tt));
@@ -24,7 +24,6 @@ fprintf('starting iteration for tempo: \t %d  \n', incrtempo(tt));
     %close all;
    
     ap1 = ap(:,1);
-    %ftdata = [1.0409,1.5263,2.0503,3.0540,4.1439,4.5495,5.088,6.0378,6.7116,7.1003,7.5593,8.0556]';
     j = 1:length(ft);
     ftcomp = zeros(length(ftdata),1);
 
@@ -42,7 +41,21 @@ fprintf('starting iteration for tempo: \t %d  \n', incrtempo(tt));
             s = s(ap1new(s)==min(ap1new));
             ftcomp(i) = samp(s);
         else
-            ftcomp(i) = NaN;
+            % extend range to twice the threshold
+            samp = ft((ft(j)>(ftdata(i)-4*tempthresh))&(ft(j)<(ftdata(i)+4*tempthresh)));
+            s = 1:length(samp);
+            if ~isempty(samp)
+                jnew = zeros(length(samp),1);
+                ap1new = zeros(length(samp),1);
+                for sp=1:length(samp)
+                    jnew(sp) = j(ft(j)==samp(sp));
+                    ap1new(sp) = ap1(jnew(sp));
+                end
+                s = s(ap1new(s)==min(ap1new));
+                ftcomp(i) = samp(s);
+            else
+                ftcomp(i) = NaN;
+            end
         end
     end
     
