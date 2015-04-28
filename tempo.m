@@ -1,6 +1,6 @@
-clear all; close all;
+clear all; close all; 
 for datj = 5 % iterate over files
-
+fprintf('starting data %d \n',datj);
 % load audio
 dat_root = 'D:\SPer\ISMIR - music paper\ismir_data\';
 dat_file = strcat('dat',num2str(datj),'.wav');
@@ -94,7 +94,6 @@ end
 %integrating with meanplot
 
 figure,plot(incrtempo,meansqer,'k'); xlabel('percentage of actual tempo'); ylabel('Mean Square Error');
-
 hold on
 for i = 1:length(flag)
     if flag(i) == 1
@@ -102,6 +101,7 @@ for i = 1:length(flag)
         hold on;
     else
         plot(incrtempo(i),meansqer(i),'*r'); 
+        hold on;
     end
 end
 figure,plot(incrtempo,1-(nwrong/length(ftdata)),'-*r'); 
